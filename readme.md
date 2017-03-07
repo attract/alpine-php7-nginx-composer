@@ -1,0 +1,1 @@
+Alpine linux based on nginx server + composer + php7
