@@ -1,10 +1,10 @@
-FROM php:7.2.0-fpm-alpine
+FROM php:7.2.0-fpm-alpine3.6
 
 MAINTAINER Amondar
 
 #nginx and common extensions for php
 RUN apk --update add nginx sqlite-dev libmcrypt-dev libxml2-dev \
-    freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev&& \
+    freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
     rm -rf /var/cache/apk/* && \
     apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
 
