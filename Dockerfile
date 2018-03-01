@@ -2,23 +2,13 @@ FROM php:7.1.13-fpm-alpine
 
 MAINTAINER Amondar
 
-RUN set -ex \
-  && apk add --no-cache \
-    ca-certificates \
-    libressl \
-    pcre \
-    zlib \
-  && apk add --no-cache --virtual .build-deps \
-    build-base \
-    linux-headers \
-    libressl-dev \
-    pcre-dev \
-    wget \
-    zlib-dev \
+RUN build_pkgs="build-base linux-headers openssl-dev pcre-dev wget zlib-dev" \
+  && runtime_pkgs="ca-certificates openssl pcre zlib" \
+  && apk --update add ${build_pkgs} ${runtime_pkgs} \
   && cd /tmp \
-  && wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
-  && tar xzf nginx-${NGINX_VERSION}.tar.gz \
-  && cd /tmp/nginx-${NGINX_VERSION} \
+  && wget http://nginx.org/download/nginx-1.11.7.tar.gz \
+  && tar xzf nginx-1.11.7.tar.gz \
+  && cd /tmp/nginx-1.11.7 \
   && ./configure \
     --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \
@@ -55,16 +45,15 @@ RUN set -ex \
     --with-mail_ssl_module \
     --with-file-aio \
     --with-http_v2_module \
-    --with-ipv6 \
-    --with-stream_realip_module \
     --with-http_image_filter_module \
-  && make -j$(getconf _NPROCESSORS_ONLN) \
+    --with-ipv6 \
+  && make \
   && make install \
   && sed -i -e 's/#access_log  logs\/access.log  main;/access_log \/dev\/stdout;/' -e 's/#error_log  logs\/error.log  notice;/error_log stderr notice;/' /etc/nginx/nginx.conf \
   && adduser -D nginx \
-  && mkdir -p /var/cache/nginx \
-  && apk del .build-deps \
-  && rm -rf /tmp/*
+  && rm -rf /tmp/* \
+  && apk del ${build_pkgs} \
+  && rm -rf /var/cache/apk/*
 
 #nginx and common extensions for php
 RUN apk --update add sqlite-dev libmcrypt-dev libxml2-dev \
