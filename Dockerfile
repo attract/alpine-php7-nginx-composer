@@ -3,7 +3,7 @@ FROM php:7.1.13-fpm-alpine
 MAINTAINER Amondar
 
 #nginx and common extensions for php
-RUN apk --update add gd sqlite-dev libmcrypt-dev libxml2-dev \
+RUN apk --update add gd gd-dev sqlite-dev libmcrypt-dev libxml2-dev \
     freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
     rm -rf /var/cache/apk/* && \
     apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
