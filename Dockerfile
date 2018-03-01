@@ -57,6 +57,7 @@ RUN set -ex \
     --with-http_v2_module \
     --with-ipv6 \
     --with-stream_realip_module \
+    --with-http_image_filter_module \
   && make -j$(getconf _NPROCESSORS_ONLN) \
   && make install \
   && sed -i -e 's/#access_log  logs\/access.log  main;/access_log \/dev\/stdout;/' -e 's/#error_log  logs\/error.log  notice;/error_log stderr notice;/' /etc/nginx/nginx.conf \
