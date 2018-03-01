@@ -2,6 +2,25 @@ FROM php:7.1.13-fpm-alpine
 
 MAINTAINER Amondar
 
+#nginx and common extensions for php
+RUN apk --update add gd sqlite-dev libmcrypt-dev libxml2-dev \
+    freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
+    rm -rf /var/cache/apk/* && \
+    apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
+
+    #php extencions
+    docker-php-ext-configure gd \
+    --with-gd \
+    --with-freetype-dir=/usr/include/ \
+    --with-png-dir=/usr/include/ \
+    --with-jpeg-dir=/usr/include/ && \
+    NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
+    docker-php-ext-install -j${NPROC} pdo_mysql mcrypt xml pcntl exif gd zip opcache && \
+    apk del --no-cache freetype-dev libpng-dev libjpeg-turbo-dev && \
+
+    #composer
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+
 RUN build_pkgs="build-base linux-headers openssl-dev pcre-dev wget zlib-dev" \
   && runtime_pkgs="ca-certificates openssl pcre zlib" \
   && apk --update add ${build_pkgs} ${runtime_pkgs} \
@@ -54,23 +73,4 @@ RUN build_pkgs="build-base linux-headers openssl-dev pcre-dev wget zlib-dev" \
   && rm -rf /tmp/* \
   && apk del ${build_pkgs} \
   && rm -rf /var/cache/apk/*
-
-#nginx and common extensions for php
-RUN apk --update add sqlite-dev libmcrypt-dev libxml2-dev \
-    freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
-    rm -rf /var/cache/apk/* && \
-    apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
-
-    #php extencions
-    docker-php-ext-configure gd \
-    --with-gd \
-    --with-freetype-dir=/usr/include/ \
-    --with-png-dir=/usr/include/ \
-    --with-jpeg-dir=/usr/include/ && \
-    NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
-    docker-php-ext-install -j${NPROC} pdo_mysql mcrypt xml pcntl exif gd zip opcache && \
-    apk del --no-cache freetype-dev libpng-dev libjpeg-turbo-dev && \
-
-    #composer
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
