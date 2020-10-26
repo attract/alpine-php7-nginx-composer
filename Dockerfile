@@ -4,7 +4,7 @@ MAINTAINER Amondar
 
 #nginx and common extensions for php
 RUN apk --update add nginx sqlite-dev libmcrypt-dev libxml2-dev \
-    freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev&& \
+    freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
     rm -rf /var/cache/apk/* && \
     apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
 
@@ -18,5 +18,5 @@ RUN apk --update add nginx sqlite-dev libmcrypt-dev libxml2-dev \
     docker-php-ext-install -j${NPROC} pdo_mysql mbstring xml pcntl exif gd zip && \
 
     #composer
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+    curl -sS https://getcomposer.org/composer-1.phar | php -- --install-dir=/usr/bin --filename=composer-1.phar
 
