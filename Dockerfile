@@ -18,5 +18,6 @@ RUN apk --update add nginx sqlite-dev libmcrypt-dev libxml2-dev \
     docker-php-ext-install -j${NPROC} pdo_mysql mbstring xml pcntl exif gd zip
 
 #composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer.phar --version=1.10.16
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer --version=1.10.16
+
 
